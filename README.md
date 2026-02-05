@@ -4,6 +4,18 @@
 
 ---
 
+## 📂 프로젝트 구조 (Project Structure)
+
+현재 프로젝트는 학습 단계에 따라 다음과 같이 구성되어 있습니다.
+
+### 01. Basic RAG (기초 개념)
+RAG의 핵심 원리인 검색(Search), 컨텍스트(Context), 추론(Reasoning)을 배우는 입문 과정입니다.
+- **가이드**: `01_basic_rag/tutorial_step1_fail.md` ~ `tutorial_step5_finish.md`
+- **코드**: `01_basic_rag/step1_fail.py` ~ `step4_rag.py`
+- **심화**: `01_basic_rag/청킹심화.md`
+
+---
+
 ## 0. 사전 준비 (인프라 세팅)
 로컬 환경(내 PC)에서 인터넷 없이 동작하는 환경을 만듭니다.
 
@@ -40,7 +52,8 @@ pip install langchain langchain-community langchain-ollama langchain-chroma lang
 ## 1단계: [실패] LLM에게 그냥 물어보기
 가장 먼저, 학습되지 않은 사내 비공개 정보를 물어봤을 때 어떤 문제가 생기는지 확인합니다.
 
-- **코드**: `step1_fail.py`
+- **코드**: `01_basic_rag/step1_fail.py`
+- **가이드**: `01_basic_rag/tutorial_step1_fail.md`
 ```python
 from langchain_ollama import ChatOllama
 
@@ -63,7 +76,8 @@ LLM은 내부 규정을 모르기 때문에 **"일반적인 근로기준법"**�
 ## 2단계: [반쪽 성공] 프롬프트에 텍스트 주입 (Context Injection)
 문서가 짧을 때 가장 확실한 방법입니다. 정보를 직접 전달합니다.
 
-- **코드**: `step2_context.py`
+- **코드**: `01_basic_rag/step2_context.py`
+- **가이드**: `01_basic_rag/tutorial_step2_context.md`
 ```python
 from langchain_ollama import ChatOllama
 
@@ -98,9 +112,10 @@ AI가 정확하게 답변합니다. 하지만 문서가 수천 페이지라면 *
 ## 3단계: [성공] VectorDB와 RAG (청킹의 마법)
 데이터가 많을 때를 대비해, 정보를 조각내어 저장하고 필요한 부분만 검색하는 방식을 학습합니다.
 
-> **심화 학습**: 청킹(Chunking) 유무에 따른 성능 차이가 궁금하다면 별도의 심화 가이드 문서인 `예제1_청킹심화.md`를 참고하세요.
+> **심화 학습**: 청킹(Chunking) 유무에 따른 성능 차이가 궁금하다면 별도의 심화 가이드 문서인 `01_basic_rag/청킹심화.md`를 참고하세요.
 
-### 코드: `step3_rag.py`
+### 코드: `01_basic_rag/step3_rag.py`
+**가이드**: `01_basic_rag/tutorial_step3_rag.md`
 문서를 의미 있는 조각(Chunk)으로 나누어 저장하고, 질문에 맞는 조각만 찾아 AI에게 전달합니다.
 
 ```python
@@ -161,7 +176,8 @@ print(f"\nAI 답변:\n{result['result']}")
 ## 4단계: [심화] DeepSeek-R1의 추론 능력 활용하기
 단순 검색을 넘어, AI가 규정을 이해하고 논리적으로 **추론(Reasoning)**하여 복잡한 질문에 답하는지 확인합니다.
 
-- **코드**: `step4_rag.py`
+- **코드**: `01_basic_rag/step4_rag.py`
+- **가이드**: `01_basic_rag/tutorial_step4_reasoning.md`
 ```python
 # 질문: 단순 검색이 아닌 계산과 논리가 필요한 질문
 question = "입사 6개월차 신입인데 리프레시 데이 2번 썼어. 몇 번 남았는지 규정 기반으로 계산해줘."
