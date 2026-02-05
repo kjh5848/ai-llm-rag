@@ -1,0 +1,32 @@
+# PART 1. FastAPI로 "초간단 사내 시스템" 만들기
+
+## 1. 📌 탄생 배경 (Background)
+- **AI와 레거시의 연결**: AI(두뇌)만 있어서는 아무것도 할 수 없음. 실제 회사의 데이터(직원, 매출, 휴가)를 담고 있는 **"기존 시스템"**이 있어야 AI가 유의미한 비서 역할을 할 수 있음.
+- **Python의 부상**: AI 라이브러리(LangChain, PyTorch)가 대부분 Python 기반이므로, 백엔드 서버도 Python(FastAPI)으로 통일하는 것이 생산성에 유리.
+
+## 2. 🔑 개념 (Concept)
+- **FastAPI**: Python 기반의 현대적이고 빠른 웹 프레임워크. 비동기 처리(Asyncio)를 지원하여 AI 요청 처리에 적합.
+- **CRUD (Create, Read, Update, Delete)**: 데이터 관리의 기본이 되는 4가지 기능. 사내 시스템의 근간.
+
+## 3. ⚙️ 역할 (Role)
+- **데이터 공급처**: AI가 조회할 정형 데이터(직원 정보, 휴가 DB)를 생성하고 관리.
+- **테스트베드**: "김대리 연차가 몇 개야?"라고 물었을 때, AI가 실제로 조회해올 수 있는 **살아있는 DB** 제공.
+
+## 4. 💡 도입 이유 (Reason)
+- **가벼움과 속도**: Django보다 가볍고, Flask보다 빠르며, 자동 문서화(Swagger UI)가 강력함.
+- **RAG/MCP 연동 용이성**: Python 함수를 바로 Tool로 변환하기 쉬움.
+
+## 5. ⚖️ 장단점 (Pros & Cons)
+| 구분 | 내용 |
+| :--- | :--- |
+| **장점** | - **생산성**: 코드 몇 줄로 API 서버가 완성됨.<br>- **확장성**: 추후 LangChain 서버와 통합하기 쉬움.<br>- **문서화**: `/docs` 엔드포인트에서 API 테스트 가능. |
+| **단점** | - **ORM 복잡성**: SQLAlchemy 등의 DB 도구를 추가로 익혀야 함.<br>- **대규모 트래픽**: Go나 Java에 비해 처리량이 낮을 수 있으나, 사내 툴로는 충분함. |
+
+## 6. 🆚 차별점 (Differences)
+- **vs Django**: Django는 너무 무겁고 기능이 많아(Full-stack), 마이크로서비스나 AI API 서버로는 FastAPI가 더 적합.
+- **vs Flask**: Flask는 동기식 처리가 기본이라 AI 스트리밍이나 비동기 도구 호출에 불리함.
+
+## 7. 🔗 관련 기술 (Related Tech)
+- **Jinja2**: 서버 사이드 템플릿 엔진. React 같은 프론트엔드 없이 빠르게 HTML 화면을 만들 때 사용.
+- **Uvicorn**: 비동기 Python 웹 서버(ASGI).
+- **SQLAlchemy**: Python 코드와 SQL DB를 연결해주는 ORM 라이브러리.
