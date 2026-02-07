@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AI 업무 비서 시스템{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0a0a0c;
+            --sidebar-bg: #121216;
+            --chat-bg: #16161c;
+            --accent-primary: #6366f1;
+            --accent-secondary: #06b6d4;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --user-bubble: #1e293b;
+            --ai-bubble: #1e1b4b;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Nav Sidebar */
+        nav.main-nav {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+        }
+
+        .logo {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2.5rem;
+        }
+
+        .nav-section { margin-bottom: 2rem; }
+        .nav-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .nav-link {
+            padding: 0.8rem 1rem;
+            border-radius: 0.75rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.3s;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--text-main);
+            background-color: var(--glass-bg);
+            border: 1px solid var(--border-color);
+        }
+
+        .nav-link.active {
+            border-left: 3px solid var(--accent-primary);
+        }
+
+        /* Content Area */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .header {
+            padding: 1.25rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 10, 12, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .page-title h2 { font-size: 1.25rem; font-weight: 600; }
+        
+        .container {
+            padding: 2rem;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        /* Shared Components */
+        .card {
+            background: var(--chat-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .badge {
+            padding: 0.25rem 0.6rem;
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-success { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+
+        {% block extra_css %}{% endblock %}
+    </style>
+</head>
+<body>
+    <nav class="main-nav">
+        <div class="logo">Metacoding AI</div>
+        
+        <div class="nav-section">
+            <h3 class="nav-title">실습 페이즈</h3>
+            <a href="/phase2" class="nav-link {% if active_page == 'phase2' %}active{% endif %}">
+                <span>🔗 Phase 2. 시스템 확장</span>
+            </a>
+            <a href="/phase3" class="nav-link {% if active_page == 'phase3' %}active{% endif %}">
+                <span>🤖 Phase 3. 에이전트 Q&A</span>
+            </a>
+        </div>
+
+        <div class="nav-section" style="margin-top: auto;">
+            <div class="nav-title">시스템 상태</div>
+            <div class="nav-link">
+                <span class="badge badge-success">● Connected</span>
+                <span style="font-size: 0.8rem;">Ollama: Running</span>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <header class="header">
+            <div class="page-title">
+                <h2>{% block page_name %}{% endblock %}</h2>
+            </div>
+            <div class="user-profile" style="font-size: 0.9rem; color: var(--text-muted);">
+                User: admin_kjh
+            </div>
+        </header>
+
+        <section class="container">
+            {% block content %}{% endblock %}
+        </section>
+    </main>
+
+    {% block sidebar %}{% endblock %}
+</body>
+</html>
