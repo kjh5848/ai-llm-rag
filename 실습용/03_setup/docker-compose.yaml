@@ -1,0 +1,9 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: metacoding
+      POSTGRES_PASSWORD: metacoding1234
+      POSTGRES_DB: metacoding_db
+    ports:
+      - "5432:5432"

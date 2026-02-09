@@ -1,0 +1,7 @@
+pymupdf
+pillow
+requests
+python-dotenv
+python-docx
+pandas
+openpyxl

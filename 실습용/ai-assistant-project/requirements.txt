@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+jinja2
+python-dotenv
+pandas
+sqlalchemy
+python-multipart
+pymupdf
+pillow
+requests
