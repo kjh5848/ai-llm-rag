@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>QA 문서 업로드</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 820px; margin: 40px auto; padding: 0 16px; }
+    h1 { font-size: 22px; }
+    form { border: 1px solid #ddd; padding: 16px; border-radius: 8px; }
+    label { display: block; margin: 12px 0 6px; font-weight: 600; }
+    select, input[type=file] { width: 100%; padding: 8px; }
+    button { margin-top: 16px; padding: 10px 16px; }
+    .note { color: #666; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <h1>QA 문서 업로드</h1>
+  <p class="note">업로드한 파일은 docs 하위 폴더에 저장되고, 변환/인덱싱됩니다.</p>
+  <form action="/qa/upload" method="post" enctype="multipart/form-data">
+    <label for="category">문서 분류</label>
+    <select id="category" name="category" required>
+      <option value="hr">HR</option>
+      <option value="ops">OPS</option>
+      <option value="security">SEC</option>
+      <option value="onboarding">ONB</option>
+      <option value="misc">MISC</option>
+    </select>
+
+    <label for="file">문서 파일</label>
+    <input id="file" name="file" type="file" accept=".pdf,.docx,.doc,.png,.jpg,.jpeg" required />
+
+    <button type="submit">업로드 & 인덱싱</button>
+  </form>
+
+  {% if result %}
+  <hr />
+  <h2>결과</h2>
+  <pre>{{ result }}</pre>
+  {% endif %}
+</body>
+</html>

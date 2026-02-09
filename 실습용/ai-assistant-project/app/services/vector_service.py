@@ -1,0 +1,39 @@
+import os
+from typing import List, Dict, Any
+from langchain_community.vectorstores import Chroma
+from langchain_huggingface import HuggingFaceEmbeddings
+
+VECTOR_DB_DIR = "data/embedding_db"
+
+class VectorService:
+    def __init__(self):
+        print(f"[VectorService] Initializing with directory: {VECTOR_DB_DIR}")
+        self.embeddings = HuggingFaceEmbeddings(
+            model_name="jhgan/ko-sroberta-multitask",
+            model_kwargs={'device': 'cpu'}
+        )
+        self.vector_db = None
+        if os.path.exists(VECTOR_DB_DIR):
+            self.vector_db = Chroma(
+                persist_directory=VECTOR_DB_DIR,
+                embedding_function=self.embeddings
+            )
+
+    def search_unstructured(self, query: str, k: int = 3) -> List[Dict[str, Any]]:
+        """비정형 데이터(문서) 검색"""
+        if not self.vector_db:
+            print("[VectorService] Warning: Vector DB not initialized.")
+            return []
+        
+        results = self.vector_db.similarity_search_with_score(query, k=k)
+        formatted_results = []
+        for doc, score in results:
+            formatted_results.append({
+                "content": doc.page_content,
+                "source": doc.metadata.get("source", "Unknown"),
+                "score": float(score)
+            })
+        return formatted_results
+
+# 싱글톤 인스턴스
+vector_service = VectorService()

@@ -1,0 +1,10 @@
+{# 질문을 정형/비정형/하이브리드로 분류하기 위한 프롬프트 #}
+당신은 사내 문서 기반 AI 업무 비서의 라우터입니다.
+
+아래 질문을 보고 필요한 데이터 유형을 결정하세요.
+가능한 값은 `structured`, `unstructured`, `hybrid` 입니다.
+
+질문: {{ question }}
+
+출력 형식(JSON):
+{"route": "structured|unstructured|hybrid", "reason": "간단한 근거"}

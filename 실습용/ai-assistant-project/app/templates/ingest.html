@@ -1,0 +1,111 @@
+{% extends "base.html" %} {% block title %}데이터 인제스트 관리 - 메타코딩{%
+endblock %} {% block page_title %}데이터 인제스트 관리{% endblock %} {% block
+page_subtitle %}사내 문서(PDF, Docx, XLSX)를 분석하여 AI가 이해할 수 있는 백터
+채널로 변환합니다.{% endblock %} {% block content %}
+<div class="card">
+  <h3>📂 문서 인제스트 파이프라인</h3>
+  <p><code>docs/</code> 폴더 내의 문서를 감지하여 단계별로 처리합니다.</p>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>파일명</th>
+        <th>현재 상태</th>
+        <th>액션</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for file in files %}
+      <tr>
+        <td><strong>{{ file.name }}</strong></td>
+        <td>
+          <span
+            class="status-badge {% if file.status == 'Vector 완료' %}status-active{% elif file.status == 'MD 완료' %}status-pending{% else %}status-inactive{% endif %}"
+          >
+            {{ file.status }}
+          </span>
+        </td>
+        <td>
+          <div style="display: flex; gap: 10px">
+            {% if file.can_convert %}
+            <form action="/admin/ingest/convert" method="post">
+              <input type="hidden" name="file_path" value="{{ file.path }}" />
+              <button type="submit" class="btn btn-primary btn-sm">
+                MD 변환
+              </button>
+            </form>
+            {% else %}
+            <button
+              class="btn btn-sm"
+              disabled
+              style="background-color: #eee; cursor: not_allowed"
+            >
+              변환 완료
+            </button>
+            {% endif %} {% if file.can_embed %}
+            <form action="/admin/ingest/embed" method="post">
+              <input type="hidden" name="md_path" value="{{ file.md_path }}" />
+              <button type="submit" class="btn btn-success btn-sm">
+                백터 임베딩
+              </button>
+            </form>
+            {% else %}
+            <button
+              class="btn btn-sm"
+              disabled
+              style="background-color: #eee; cursor: not_allowed"
+            >
+              임베딩 완료
+            </button>
+            {% endif %}
+          </div>
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="3" style="text-align: center; padding: 40px; color: #999">
+          분석할 문서가 docs 폴더에 없습니다.
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .status-badge {
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+  .status-active {
+    background: #e6ffed;
+    color: #22863a;
+  } /* Vector 완료 */
+  .status-pending {
+    background: #fff5b1;
+    color: #735c0f;
+  } /* MD 완료 */
+  .status-inactive {
+    background: #f6f8fa;
+    color: #586069;
+  } /* Raw */
+
+  .btn-sm {
+    padding: 5px 12px;
+    font-size: 0.85rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+  }
+  .btn-primary {
+    background: #0366d6;
+    color: white;
+  }
+  .btn-success {
+    background: #28a745;
+    color: white;
+  }
+</style>
+{% endblock %}

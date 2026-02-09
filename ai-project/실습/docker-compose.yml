@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:15
+    container_name: ai_assistant_db
+    restart: always
+    environment:
+      POSTGRES_USER: metacoding
+      POSTGRES_PASSWORD: metacoding1234
+      POSTGRES_DB: metacoding_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  chroma:
+    image: chromadb/chroma:latest
+    container_name: ai_assistant_vector
+    restart: always
+    ports:
+      - "8000:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+
+volumes:
+  postgres_data:
+  chroma_data:

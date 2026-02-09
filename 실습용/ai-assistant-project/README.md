@@ -1,112 +1,54 @@
-# AI 업무 비서 통합 프로젝트 (AI Work Assistant Interface)
+# Metacoding AI 어시스턴트 프로젝트 (하이브리드 Q&A)
 
-본 프로젝트는 "사내 문서를 위한 AI 업무 비서" 시리즈의 실습 코드를 하나의 실행 가능한 애플리케이션 구조로 통합한 버전입니다.
+본 프로젝트는 사내의 정형 데이터(PostgreSQL/SQLite)와 비정형 문서 데이터(PDF, Word, Excel)를 통합하여 지능형 답변을 제공하는 **메타코딩 전용 AI 비서 시스템**입니다.
 
-## 📂 폴더 구조 (Directory Structure)
+## 🌟 주요 기능
 
-### 1. 파일 트리 (File Tree)
+1. **지능형 하이브리드 Q&A (Gemini 스타일 UI)**
+   - **RAG (문서 기반)**: 사내 정책서, 매뉴얼 등 비정형 데이터 검색.
+   - **SQL (시스템 데이터)**: 직원 정보, 매출 현황, 휴가 잔여량 등 실시간 DB 조회.
+   - **Ollama 연동**: 검색된 정보를 바탕으로 AI(DeepSeek-R1 등)가 종합적인 답변 생성.
+   - **현대적 UI**: 하단 입력바와 상단 답변 말풍선 구조의 채팅 인터페이스.
 
-```
-ai-assistant-project/
-├── app/                    # FastAPI 백엔드 애플리케이션
-│   ├── routers/            # API 라우터 (기능별 분리)
-│   │   ├── employees.py    # 직원 정보 API
-│   │   ├── leaves.py       # 휴가 관리 API
-│   │   ├── sales.py        # 영업 실적 API
-│   │   └── ui.py           # UI 렌더링 라우터
-│   ├── templates/          # HTML 템플릿 (Jinja2)
-│   ├── static/             # 정적 파일 (CSS, JS)
-│   ├── main.py             # 앱 진입점 (Entry Point)
-│   ├── app.py              # 앱 설정 및 초기화
-│   ├── db.py               # 데이터베이스 설정
-│   ├── models.py           # SQLAlchemy ORM 모델
-│   ├── crud.py             # DB CRUD 함수
-│   └── init_db.py          # DB 초기화 스크립트
-├── scripts/                # 데이터 전처리 파이프라인
-│   ├── pdf_to_md.py        # 기본 PDF 변환
-│   ├── ai_pdf_to_md.py     # AI 기반 PDF 분석
-│   └── image_to_md.py      # 이미지 문서 변환
-├── data/                   # 데이터 저장소
-│   ├── raw/                # 원본 문서 (주제별 분류)
-│   │   ├── hr/             # 인사 및 휴가 규정
-│   │   ├── ops/            # 운영 및 업무 매뉴얼
-│   │   ├── security/       # 보안 정책 문서
-│   │   ├── onboarding/     # 신입사원 교육 자료
-│   │   └── faq/            # 자주 묻는 질문
-│   └── processed/          # 처리된 마크다운
-├── requirements.txt        # 의존성 패키지
-└── README.md               # 프로젝트 문서
-```
+2. **인제스트 관리 시스템 (Selective Ingestion)**
+   - **수동 제어**: 로컬 리소스 최적화를 위해 사용자가 필요한 파일만 선택적으로 임베딩.
+   - **단계별 프로세스**: 'MD 변환' 후 '백터 임베딩'을 순차적으로 수행 가능.
+   - **증분 업데이트**: 이미 처리된 파일은 상태 아이콘을 통해 명확히 표시.
 
-### 2. 아키텍처 다이어그램 (Architecture Diagram)
+3. **메타코딩 브랜드 동기화**
+   - 대시보드 및 모든 UI가 '메타코딩' 전용 색상 및 레이아웃으로 통일되었습니다.
+   - 자동 DB 초기화 기능을 통해 샘플 데이터(직원 10명, 매출 30건 등)가 즉시 생성됩니다.
 
-```mermaid
-graph TD
-    Project[ai-assistant-project]
-    style Project fill:#f9f,stroke:#333,stroke-width:2px
+## 🚀 퀵 스타트 가이드
 
-    %% Directories
-    AppDir[📂 app/]
-    ScriptsDir[📂 scripts/]
-    DataDir[📂 data/]
-
-    Project --> AppDir
-    Project --> ScriptsDir
-    Project --> DataDir
-    Project --> Readme[📄 README.md]
-    Project --> Req[📄 requirements.txt]
-
-    %% App Structure
-    subgraph Backend [FastAPI Backend]
-        AppDir --> Main[main.py<br/>Entry Point]
-        AppDir --> AppPy[app.py]
-        AppDir --> DB[db.py<br/>DB Config]
-        AppDir --> Models[models.py<br/>ORM Models]
-        AppDir --> CRUD[crud.py<br/>DB Operations]
-        AppDir --> InitDB[init_db.py<br/>Setup Script]
-
-        %% Routers
-        AppDir --> RoutersDir[📂 routers/]
-        RoutersDir --> RouterEmp[employees.py]
-        RoutersDir --> RouterLeave[leaves.py]
-        RoutersDir --> RouterSales[sales.py]
-        RoutersDir --> RouterUI[ui.py]
-
-        %% Static & Templates
-        AppDir --> StaticDir[📂 static/]
-        AppDir --> TemplDir[📂 templates/]
-    end
-
-    %% Scripts Structure
-    subgraph Pipeline [Data Processing]
-        ScriptsDir --> ScriptPDF[pdf_to_md.py]
-        ScriptsDir --> ScriptAI[ai_pdf_to_md.py]
-        ScriptsDir --> ScriptImg[image_to_md.py]
-    end
-
-    %% Data Structure
-    subgraph Storage [Data Storage]
-        DataDir --> RawDir[📂 raw/]
-        DataDir --> ProcDir[📂 processed/]
-        AppDir --> LocalDB[(company.db)]
-    end
-```
-
-## 🚀 실행 방법 (How to Run)
-
-1. **의존성 설치**
+1. **환경 구축**
 
    ```bash
+   python -m venv venv
+   source venv/bin/activate  # Mac 기준
    pip install -r requirements.txt
    ```
 
-2. **백엔드 서버 실행**
+2. **Ollama 실행**
+   - 로컬에 Ollama가 설치되어 있어야 하며, `deepseek-r1:8b` (또는 설정된 모델)이 다운로드되어 있어야 합니다.
+
+3. **서버 가동**
 
    ```bash
-   uvicorn app.main:app --reload
+   python app/main.py
    ```
 
-3. **데이터 전처리 스크립트 실행 (예시)**
-   ```bash
-   python scripts/pdf_to_md.py
-   ```
+4. **접속**
+   - 브라우저에서 `http://127.0.0.1:8000` 접속 시 대시보드로 리다이렉트됩니다.
+
+## 📂 주요 폴더 구조
+
+- `app/`: FastAPI 애플리케이션 및 라우터, 템플릿
+- `docs/`: 인제스트 대상 원본 문서 보관소
+- `data/`: SQLite DB 및 벡터 DB(Chroma) 저장소
+- `scripts/`: 문서 변환 및 임베딩 로직
+- `ingest.py`: CLI 기반 데이터 인제스트 도구
+
+---
+
+_본 프로젝트는 '메타코딩'의 업무 효율 극대화를 목표로 설계되었습니다._

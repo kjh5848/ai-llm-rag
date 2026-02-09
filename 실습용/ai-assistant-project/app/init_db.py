@@ -2,10 +2,10 @@ import sqlite3
 import random
 from datetime import datetime, timedelta
 
-from db import DB_PATH
+from db import get_db_connection
 
 def init_db():
-    conn = sqlite3.connect(DB_PATH)
+    conn = get_db_connection()
     cursor = conn.cursor()
 
     # 기존 테이블 삭제 (초기화용)
@@ -98,7 +98,7 @@ def init_db():
 
     conn.commit()
     conn.close()
-    print(f"🚀 데이터베이스 초기화 완료 ({DB_PATH})")
+    print(f"🚀 데이터베이스 초기화 완료")
 
 if __name__ == "__main__":
     init_db()

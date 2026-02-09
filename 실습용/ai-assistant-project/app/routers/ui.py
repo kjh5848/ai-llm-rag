@@ -3,7 +3,7 @@ from fastapi import APIRouter, Request, Form
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 
-from db import get_db_connection, DB_PATH
+from db import get_db_connection, DATABASE_URL
 import crud
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -33,7 +33,7 @@ def dashboard(request: Request):
         {
             "request": request,
             "active_page": "dashboard",
-            "db_path": DB_PATH,
+            "db_path": DATABASE_URL,
             "employees_count": employees_count,
             "leaves_count": leaves_count,
             "sales_count": sales_count,

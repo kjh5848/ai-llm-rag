@@ -1,10 +1,10 @@
-import requests
+import ollama
 import json
 import os
 import fitz  # PyMuPDF
 from datetime import datetime
 
-def refine_pdf_to_md_with_ai(pdf_path, output_md, model="deepseek-r1"):
+def refine_pdf_to_md_with_ai(pdf_path, output_md, model="deepseek-r1:8b"):
     """
     [2단계 파이프라인] 
     1. PDF에서 Raw Text를 직접 추출합니다.
@@ -48,17 +48,13 @@ def refine_pdf_to_md_with_ai(pdf_path, output_md, model="deepseek-r1"):
     마크다운 코드만 출력해 주세요.
     """
 
-    url = "http://localhost:11434/api/generate"
-    payload = {
-        "model": model,
-        "prompt": prompt,
-        "stream": False
-    }
-
     try:
-        response = requests.post(url, json=payload)
-        response.raise_for_status()
-        refined_md = response.json().get("response", "")
+        response = ollama.generate(
+            model=model,
+            prompt=prompt,
+            stream=False
+        )
+        refined_md = response.get("response", "")
 
         os.makedirs(os.path.dirname(output_md), exist_ok=True)
         with open(output_md, "w", encoding="utf-8") as f:
@@ -74,7 +70,7 @@ def refine_pdf_to_md_with_ai(pdf_path, output_md, model="deepseek-r1"):
 
 if __name__ == "__main__":
     # PDF 파일을 입력으로 직접 사용합니다.
-    input_pdf = "data/docs/hr/HR_메타코딩_사내규정_v1.0.pdf"
+    input_pdf = "/Users/nomadlab/Desktop/김주혁/workspace/coding-study/ai-llm-rag/실습용/ai-assistant-project/ai-list.pdf"
     output_md = "parsed_data/ai_standard_policy.md"
     
     refine_pdf_to_md_with_ai(input_pdf, output_md)
