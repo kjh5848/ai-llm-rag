@@ -1,8 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 
-from db import get_db
-from models import SalesCreate
-import crud
+from database import get_db, schemas, crud
 
 router = APIRouter()
 
@@ -13,7 +11,7 @@ def list_sales(conn=Depends(get_db)):
 
 
 @router.post("/sales")
-def create_sales(payload: SalesCreate, conn=Depends(get_db)):
+def create_sales(payload: schemas.SalesCreate, conn=Depends(get_db)):
     return crud.create_sale(conn, payload.dept, payload.amount, payload.date, payload.description)
 
 

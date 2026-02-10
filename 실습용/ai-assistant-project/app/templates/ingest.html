@@ -1,111 +1,272 @@
-{% extends "base.html" %} {% block title %}데이터 인제스트 관리 - 메타코딩{%
-endblock %} {% block page_title %}데이터 인제스트 관리{% endblock %} {% block
-page_subtitle %}사내 문서(PDF, Docx, XLSX)를 분석하여 AI가 이해할 수 있는 백터
-채널로 변환합니다.{% endblock %} {% block content %}
-<div class="card">
-  <h3>📂 문서 인제스트 파이프라인</h3>
-  <p><code>docs/</code> 폴더 내의 문서를 감지하여 단계별로 처리합니다.</p>
+{% extends "base.html" %} 
+{% block title %}데이터 인제스트 관리 - 메타코딩{% endblock %} 
+{% block page_title %}데이터 인제스트 관리{% endblock %} 
+{% block page_subtitle %}사내 문서(PDF, Docx, XLSX)를 카테고리별로 분류하여 지능형 비서의 지식으로 변환합니다.{% endblock %} 
 
-  <table class="data-table">
-    <thead>
-      <tr>
-        <th>파일명</th>
-        <th>현재 상태</th>
-        <th>액션</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for file in files %}
-      <tr>
-        <td><strong>{{ file.name }}</strong></td>
-        <td>
-          <span
-            class="status-badge {% if file.status == 'Vector 완료' %}status-active{% elif file.status == 'MD 완료' %}status-pending{% else %}status-inactive{% endif %}"
-          >
-            {{ file.status }}
-          </span>
-        </td>
-        <td>
-          <div style="display: flex; gap: 10px">
-            {% if file.can_convert %}
-            <form action="/admin/ingest/convert" method="post">
-              <input type="hidden" name="file_path" value="{{ file.path }}" />
-              <button type="submit" class="btn btn-primary btn-sm">
-                MD 변환
-              </button>
-            </form>
-            {% else %}
-            <button
-              class="btn btn-sm"
-              disabled
-              style="background-color: #eee; cursor: not_allowed"
-            >
-              변환 완료
-            </button>
-            {% endif %} {% if file.can_embed %}
-            <form action="/admin/ingest/embed" method="post">
-              <input type="hidden" name="md_path" value="{{ file.md_path }}" />
-              <button type="submit" class="btn btn-success btn-sm">
-                백터 임베딩
-              </button>
-            </form>
-            {% else %}
-            <button
-              class="btn btn-sm"
-              disabled
-              style="background-color: #eee; cursor: not_allowed"
-            >
-              임베딩 완료
-            </button>
-            {% endif %}
-          </div>
-        </td>
-      </tr>
-      {% else %}
-      <tr>
-        <td colspan="3" style="text-align: center; padding: 40px; color: #999">
-          분석할 문서가 docs 폴더에 없습니다.
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+{% block content %}
+<div class="ingest-container">
+    <!-- 1. 스마트 업로드 섹션 -->
+    <div class="card upload-card">
+        <h3>📂 지능형 문서 업로드</h3>
+        <p>파일을 선택하거나 드래그하여 특정 카테고리에 추가하세요.</p>
+        
+        <form action="/admin/ingest/upload" method="post" enctype="multipart/form-data" class="upload-form">
+            <div class="category-selector">
+                <input type="radio" name="category" value="hr" id="cat-hr" checked>
+                <label for="cat-hr">👤 인사(HR)</label>
+                
+                <input type="radio" name="category" value="security" id="cat-sec">
+                <label for="cat-sec">🛡️ 보안(Security)</label>
+                
+                <input type="radio" name="category" value="ops" id="cat-ops">
+                <label for="cat-ops">⚙️ 운영(Ops)</label>
+                
+                <input type="radio" name="category" value="guide" id="cat-guide">
+                <label for="cat-guide">📖 가이드(Guide)</label>
+
+                <input type="radio" name="category" value="general" id="cat-general">
+                <label for="cat-general">📂 일반(General)</label>
+            </div>
+            
+            <div class="drop-zone" id="drop-zone">
+                <div class="drop-zone-content">
+                    <span class="upload-icon">📤</span>
+                    <p>이곳에 파일을 드래그하거나 <strong>클릭하여 선택</strong>하세요.</p>
+                    <input type="file" name="file" id="file-input" required hidden>
+                    <div id="file-name-display" class="file-name-display"></div>
+                </div>
+            </div>
+            
+            <div class="upload-actions">
+                <button type="submit" class="btn btn-primary">서버로 업로드</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- 2. 카테고리별 문서 리스트 -->
+    {% for cat_name, files in categories.items() %}
+    <div class="card category-card">
+        <div class="category-header">
+            <h3>
+                {% if cat_name == 'hr' %}👤 인사(HR) Documents
+                {% elif cat_name == 'security' %}🛡️ 보안(Security) Documents
+                {% elif cat_name == 'ops' %}⚙️ 운영(Ops) Manuals
+                {% elif cat_name == 'guide' %}📖 Guidebooks
+                {% else %}📂 일반 문서{% endif %}
+            </h3>
+            <span class="file-count">{{ files|length }}개 파일</span>
+        </div>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>파일명</th>
+                    <th>상태</th>
+                    <th>액션</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for file in files %}
+                <tr>
+                    <td><strong>{{ file.name }}</strong></td>
+                    <td>
+                        <span class="status-badge {% if file.status == 'Vector 완료' %}status-active{% elif file.status == 'MD 완료' %}status-pending{% else %}status-inactive{% endif %}">
+                            {{ file.status }}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-group">
+                            {% if file.can_convert %}
+                            <form action="/admin/ingest/convert" method="post">
+                                <input type="hidden" name="file_path" value="{{ file.path }}" />
+                                <button type="submit" class="btn btn-primary btn-sm">MD 변환</button>
+                            </form>
+                            {% else %}
+                            <button class="btn btn-sm btn-disabled" disabled>변환 완료</button>
+                            {% endif %} 
+                            
+                            {% if file.can_embed %}
+                            <form action="/admin/ingest/embed" method="post">
+                                <input type="hidden" name="md_path" value="{{ file.md_path }}" />
+                                <button type="submit" class="btn btn-success btn-sm">백터 임베딩</button>
+                            </form>
+                            {% else %}
+                            <button class="btn btn-sm btn-disabled" disabled>임베딩 완료</button>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% if not files %}
+                <tr>
+                    <td colspan="3" class="empty-row">이 카테고리에 등록된 문서가 없습니다.</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+    {% endfor %}
 </div>
 
 <style>
-  .status-badge {
-    padding: 4px 10px;
-    border-radius: 4px;
-    font-size: 0.85rem;
-    font-weight: 500;
-  }
-  .status-active {
-    background: #e6ffed;
-    color: #22863a;
-  } /* Vector 완료 */
-  .status-pending {
-    background: #fff5b1;
-    color: #735c0f;
-  } /* MD 완료 */
-  .status-inactive {
-    background: #f6f8fa;
-    color: #586069;
-  } /* Raw */
+    .ingest-container {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
 
-  .btn-sm {
-    padding: 5px 12px;
-    font-size: 0.85rem;
-    border-radius: 4px;
-    border: none;
-    cursor: pointer;
-  }
-  .btn-primary {
-    background: #0366d6;
-    color: white;
-  }
-  .btn-success {
-    background: #28a745;
-    color: white;
-  }
+    /* 업로드 카드 스타일 */
+    .upload-card {
+        border: 2px dashed #e1e4e8;
+        background: #fafbfc;
+        padding: 30px;
+    }
+
+    .category-selector {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+    .category-selector input {
+        display: none;
+    }
+
+    .category-selector label {
+        padding: 8px 16px;
+        border: 1px solid #ddd;
+        border-radius: 20px;
+        cursor: pointer;
+        background: white;
+        transition: all 0.2s;
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+
+    .category-selector input:checked + label {
+        background: #0366d6;
+        color: white;
+        border-color: #0366d6;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .drop-zone {
+        border: 2px dashed #0366d6;
+        border-radius: 8px;
+        padding: 40px;
+        text-align: center;
+        background: white;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .drop-zone:hover {
+        background: #f1f8ff;
+    }
+
+    .upload-icon {
+        font-size: 2rem;
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    .file-name-display {
+        margin-top: 10px;
+        font-weight: bold;
+        color: #0366d6;
+    }
+
+    .upload-actions {
+        margin-top: 20px;
+        text-align: right;
+    }
+
+    /* 카테고리 카드 스타일 */
+    .category-card {
+        padding: 20px;
+    }
+
+    .category-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+    }
+
+    .file-count {
+        font-size: 0.85rem;
+        color: #666;
+        background: #f0f0f0;
+        padding: 2px 8px;
+        border-radius: 10px;
+    }
+
+    .action-group {
+        display: flex;
+        gap: 8px;
+    }
+
+    .btn-disabled {
+        background: #f0f0f0 !important;
+        color: #999 !important;
+        cursor: not-allowed;
+    }
+
+    .empty-row {
+        text-align: center;
+        padding: 30px !important;
+        color: #999;
+        font-style: italic;
+    }
+
+    .status-badge {
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+    .status-active { background: #e6ffed; color: #22863a; }
+    .status-pending { background: #fff5b1; color: #735c0f; }
+    .status-inactive { background: #f6f8fa; color: #586069; }
+
+    .btn-sm {
+        padding: 4px 10px;
+        font-size: 0.8rem;
+    }
 </style>
+
+<script>
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input');
+    const fileNameDisplay = document.getElementById('file-name-display');
+
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    fileInput.addEventListener('change', (e) => {
+        if (fileInput.files.length > 0) {
+            fileNameDisplay.textContent = `선택된 파일: ${fileInput.files[0].name}`;
+        }
+    });
+
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.style.background = '#f1f8ff';
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+        dropZone.style.background = 'white';
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.style.background = 'white';
+        if (e.dataTransfer.files.length > 0) {
+            fileInput.files = e.dataTransfer.files;
+            fileNameDisplay.textContent = `선택된 파일: ${e.dataTransfer.files[0].name}`;
+        }
+    });
+</script>
 {% endblock %}

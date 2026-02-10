@@ -1,8 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 
-from db import get_db
-from models import LeaveUsage, LeaveUpdate
-import crud
+from database import get_db, schemas, crud
 
 router = APIRouter()
 
@@ -21,7 +19,7 @@ def get_leave_balance(emp_id: int, conn=Depends(get_db)):
 
 
 @router.post("/leaves/usage")
-def use_leave(payload: LeaveUsage, conn=Depends(get_db)):
+def use_leave(payload: schemas.LeaveUsage, conn=Depends(get_db)):
     updated = crud.use_leave(conn, payload.employee_id, payload.days)
     if not updated:
         raise HTTPException(status_code=404, detail="Leave record not found")
@@ -29,7 +27,7 @@ def use_leave(payload: LeaveUsage, conn=Depends(get_db)):
 
 
 @router.put("/leaves/{leave_id}")
-def update_leave(leave_id: int, payload: LeaveUpdate, conn=Depends(get_db)):
+def update_leave(leave_id: int, payload: schemas.LeaveUpdate, conn=Depends(get_db)):
     updated = crud.update_leave(
         conn,
         leave_id,

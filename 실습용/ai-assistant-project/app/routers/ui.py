@@ -3,8 +3,7 @@ from fastapi import APIRouter, Request, Form
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 
-from db import get_db_connection, DATABASE_URL
-import crud
+from database import get_db_connection, crud, DATABASE_URL
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
@@ -44,31 +43,53 @@ def dashboard(request: Request):
 
 
 @router.get("/employees")
-def employees_page(request: Request):
+def employees_page(
+    request: Request,
+    name: str = "",
+    dept: str = "",
+):
     conn = get_db_connection()
     employees = crud.list_employees(conn)
     conn.close()
+
+    # 필터링 로직 (Python 레벨에서 처리)
+    if name:
+        employees = [e for e in employees if name in e["name"]]
+    if dept:
+        employees = [e for e in employees if dept in e["dept"]]
+
     return templates.TemplateResponse(
         "employees.html",
         {
             "request": request,
             "active_page": "employees",
             "employees": employees,
+            "search_name": name,
+            "search_dept": dept,
         },
     )
 
 
 @router.get("/leaves")
-def leaves_page(request: Request):
+def leaves_page(
+    request: Request,
+    employee_name: str = "",
+):
     conn = get_db_connection()
     leaves = crud.list_leaves(conn)
     conn.close()
+
+    # 직원 이름 필터링
+    if employee_name:
+        leaves = [l for l in leaves if employee_name in l["name"]]
+
     return templates.TemplateResponse(
         "leaves.html",
         {
             "request": request,
             "active_page": "leaves",
             "leaves": leaves,
+            "search_employee_name": employee_name,
         },
     )
 
