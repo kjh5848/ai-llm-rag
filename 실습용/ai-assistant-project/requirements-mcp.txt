@@ -1,4 +1,0 @@
-# 5. MCP (Model Context Protocol)
-# [중요] fastmcp는 Python 3.10 이상을 요구합니다.
-# mcp                     # (선택) MCP 공식 SDK
-fastmcp                   # MCP 서버를 빠르고 쉽게 구축하기 위한 프레임워크 (FastAPI 스타일)

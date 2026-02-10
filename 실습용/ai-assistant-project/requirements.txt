@@ -1,4 +1,3 @@
 -r requirements-core.txt
 -r requirements-rag.txt
 -r requirements-doc.txt
-# -r requirements-mcp.txt  # 에러 방지를 위해 필요한 경우에만 주석 해제 후 설치
