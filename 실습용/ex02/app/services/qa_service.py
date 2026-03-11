@@ -116,7 +116,7 @@ class QAService:
                 if isinstance(observation, list):
                     unstructured.extend(observation)
                 else:
-                    unstructured.append({"content": str(observation), "source": "Agent Search"})
+                    unstructured.append({"content": str(observation), "source": "에이전트 검색"})
                     
             elif tool_name == "list_employees":
                 if isinstance(observation, list):

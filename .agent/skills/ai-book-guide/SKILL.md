@@ -18,5 +18,7 @@ description: 기술 도서(Technical Book) 집필 및 시각화 가이드 시스
 
 문체, 코드 작성 표준, 실습 구성 방법은 아래 문서를 따릅니다.
 
-- **바로가기**: [writing-guide.md](./writing-guide.md)
-- **주요 내용**: 집필 핵심 전략, 설명의 기술, 하십시오체, 챕터 마무리 규칙, 코드 설명 표준.
+- **[tone-and-manner.md](./tone-and-manner.md)**: 권위 있는 하십시오체, 멘토링 어조.
+- **[formatting-guide.md](./formatting-guide.md)**: 마크다운 편집 시 볼드체 공백 유지 및 경고 박스 규칙, Mermaid 기본 구문.
+- **[structure-guide.md](./structure-guide.md)**: 챕터의 3단계 개념-실습-분석 구성 및 마무리 규칙.
+- **[code-writing-guide.md](./code-writing-guide.md)**: 실무급 코드 모듈화, 가상환경 준비, 한국어 주석 필수.

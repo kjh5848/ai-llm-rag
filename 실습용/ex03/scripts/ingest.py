@@ -101,10 +101,10 @@ def run_ingestion(target_file=None):
             output_name = f"{os.path.splitext(file_name)[0]}.md"
             output_path = os.path.join(PROCESSED_DIR, output_name)
             
-            # Step 1: File to MD (변환)
+            # 1단계: 파일을 MD로 (변환)
             strategy_func(file_path, output_path)
             
-            # Step 2: MD to Embedding (임베딩)
+            # 2단계: MD를 임베딩으로 (임베딩)
             if os.path.exists(output_path):
                 # 메타데이터 추출
                 metadata = parse_metadata(file_name)
@@ -127,7 +127,7 @@ def run_ingestion(target_file=None):
     print("="*50 + "\n")
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Metacoding AI Assistant Data Ingestion")
+    parser = argparse.ArgumentParser(description="메타코딩 AI 비서 데이터 인제스트")
     parser.add_argument("--file", "-f", help="특정 파일명 또는 패턴만 처리하고 싶을 때 사용")
     parser.add_argument("--mode", "-m", choices=["all", "convert", "embed"], default="all", help="작업 모드 설정")
     args = parser.parse_args()

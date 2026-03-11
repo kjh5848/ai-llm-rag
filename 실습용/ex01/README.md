@@ -2,17 +2,17 @@
 
 > **"사내의 흩어진 모든 데이터를 하나로 연결하여, 당신의 완벽한 업무 파트너가 되어 드립니다."**
 
-본 프로젝트는 사내의 **정형 데이터(SQL DB)**와 **비정형 문서 데이터(파일)**를 통합 분석하여, 질문에 가장 적합한 답변을 제안하는 **지능형 하이브리드 RAG 시스템**입니다.
+본 프로젝트는 사내의 **정형 데이터(SQL DB)** 와 **비정형 문서 데이터(파일)** 를 통합 분석하여, 질문에 가장 적합한 답변을 제안하는 **지능형 하이브리드 RAG 시스템**입니다.
 
 ---
 
 ## 👋 프로젝트 소개
 
-단순히 문서를 찾는 검색 엔진이 아닙니다. 질문자의 의도를 실시간으로 파악하여 **"데이터베이스(SQL)를 조회할 것인가?"** 아니면 **"문서(Vector)에서 찾을 것인가?"**를 스스로 결정하는 스마트한 업무 비서입니다.
+단순히 문서를 찾는 검색 엔진이 아닙니다. 질문자의 의도를 실시간으로 파악하여 **"데이터베이스(SQL)를 조회할 것인가?"** 아니면 **"문서(Vector)에서 찾을 것인가?"** 를 스스로 결정하는 스마트한 업무 비서입니다.
 
 ### ✨ 핵심 가치 (Core Values)
 
-- **사내 보안 준수 (Local Privacy)**: 모든 모델(Ollama)이 로컬에서 구동되어 소중한 정보가 외부로 유출되지 않습니다.
+- **사내 보안 준수(Local Privacy)**: 모든 모델(Ollama)이 로컬에서 구동되어 소중한 정보가 외부로 유출되지 않습니다.
 - **통합 지식 관리**: 인사, 보안, 매출 등 흩어진 데이터를 하나의 채팅창에서 통합 관리하십시오.
 
 ### 🧠 AI 에이전트의 진화 (MCP 도입)
@@ -38,31 +38,19 @@
 ai-assistant-project/
 ├── 📁 app/                     # 애플리케이션 핵심 로직
 │   ├── main.py                 # FastAPI 엔트리포인트 (서버 실행)
-│   ├── 📁 database/            # 데이터베이스 연결 및 관리
-│   │   ├── connection.py       # DB 연결 (PostgreSQL/SQLite 자동 감지)
-│   │   ├── crud.py             # 데이터 생성/조회/수정/삭제 쿼리 함수
-│   │   ├── models.py           # 데이터베이스 스키마 정의 (SQLAlchemy)
-│   │   └── init_db.py          # 테이블 초기화 및 샘플 데이터 생성
-│   ├── 📁 routers/             # API 엔드포인트 정의 (UI 및 기능별 분리)
-│   │   ├── ui.py               # 관리자 페이지 렌더링
-│   │   ├── qa.py               # 챗봇 질문/답변 API
-│   │   └── ...                 # 기타 기능별 라우터
-│   ├── 📁 services/            # 비즈니스 로직 처리 Layer
-│   │   ├── qa_service.py       # RAG + SQL 하이브리드 검색 오케스트레이터
-│   │   ├── llm_service.py      # LLM 연동 (Ollama/OpenAI) 및 프롬프트 관리
-│   │   ├── vector_service.py   # 벡터 DB(Chroma) 검색 및 조회
-│   │   └── db_service.py       # 정형 데이터(SQL) 검색 로직
-│   ├── 📁 static/              # 정적 파일 (CSS, JS)
-│   └── 📁 templates/           # HTML 템플릿 (Jinja2)
-├── 📁 data/                    # 데이터 저장소
-│   └── 📁 embedding_db/        # 벡터 데이터베이스 (ChromaDB) 저장 경로
-├── 📁 docs/                    # RAG 학습용 원본 문서 (PDF, txt 등)
-├── 📁 mcp/                     # MCP(Model Context Protocol) 서버 구현
-├── 📁 scripts/                 # 유틸리티 스크립트
-│   └── ingest.py               # 문서 학습 스크립트 (PDF -> VectorDB 변환)
-├── .env                        # 환경 변수 설정 파일 (API 키, DB 경로 등)
-├── docker-compose.yml          # 데이터베이스 실행 설정 (Docker)
-└── requirements.txt            # 프로젝트 의존성 패키지 목록
+│   ├── 📁 services/            # 비즈니스 로직 (RAG, SQL 검색 등)
+│   └── ...
+├── 📁 data/                    # 통합 데이터 저장소
+│   ├── 📁 docs/                # 실습용 원본 데이터 (PDF, Excel)
+│   │   ├── 📁 ex_excel/        # 엑셀 실습 원본 파일
+│   │   └── 📁 ex_pdf/          # PDF 실습 원본 파일
+│   ├── 📁 processed/           # [NEW] 스크립트 실행 결과 통합 출력 폴더
+│   └── 📁 embedding_db/        # 벡터 데이터베이스 (ChromaDB)
+├── 📁 scripts/                 # 유틸리티 및 데이터 처리 스크립트
+│   ├── 📁 excel_scripts/       # 엑셀 전처리 실습 스크립트
+│   └── 📁 pdf_scripts/         # PDF 전처리 실습 스크립트
+├── .env                        # 환경 변수 설정
+└── requirements.txt            # 의존성 패키지 목록
 ```
 
 ### 📁 주요 디렉토리 역할
@@ -82,9 +70,9 @@ ai-assistant-project/
 
 사내 시스템의 핵심 지표들을 실시간으로 조회할 수 있습니다.
 
-- **직원 정보 (`employee`)**: 성명, 부서, 이메일, 입사일 등 기본 인적 사항
-- **연차 관리 (`leave_balance`)**: 사원별 총 연차, 사용 일수, 잔여 연차 및 해당 연도 정보
-- **매출 실적 (`sales`)**: 부서별 실적 금액, 날짜, 프로젝트 상세 설명
+- **직원 정보(`employee`)**: 성명, 부서, 이메일, 입사일 등 기본 인적 사항
+- **연차 관리(`leave_balance`)**: 사원별 총 연차, 사용 일수, 잔여 연차 및 해당 연도 정보
+- **매출 실적(`sales`)**: 부서별 실적 금액, 날짜, 프로젝트 상세 설명
 
 | 카테고리      | 성명   | 부서   | 이메일/상세          | 예시 데이터                 |
 | :------------ | :----- | :----- | :------------------- | :-------------------------- |
@@ -111,10 +99,12 @@ ai-assistant-project/
 | **fastapi**                  | 현대적이고 빠른 웹 프레임워크로 API 서버의 기반이 됩니다.                                      | 웹 서버            |
 | **sqlalchemy**               | 파이썬 프로젝트에서 SQL 데이터베이스를 다루기 위한 ORM 도구입니다.                             | PostgreSQL 연결    |
 | **langchain**                | LLM과 다양한 데이터 소스(DB, 문서)를 연결하는 프레임워크입니다.                                | RAG 오케스트레이션 |
-| **langchain-huggingface**    | **[중요]** 한국어 문장을 숫자로 변환(임베딩)하는 허깅페이스 모델을 사용하기 위해 필수적입니다. | 문서 검색의 핵심   |
+| **langchain-huggingface**    | 한국어 문장을 숫자로 변환(임베딩)하는 허깅페이스 모델을 사용하기 위해 필수적입니다.            | 문서 검색의 핵심   |
 | **chromadb**                 | 변환된 숫자 데이터를 저장하고 유사도 검색을 수행하는 벡터 데이터베이스입니다.                  | 지식 저장소        |
-| **psycopg2-binary**          | PostgreSQL 데이터베이스와 통신하기 위한 드라이버입니다.                                        | DB 드라이버        |
-| **easyocr** / **pdfplumber** | PDF나 이미지 문서에서 텍스트를 추출하는 데 사용됩니다.                                         | 데이터 인제스트    |
+| **easyocr**                  | 로컬 기반의 OCR 엔진으로 이미지 내 텍스트를 AI 도움 없이 판독합니다.                           | [NEW] 로컬 OCR     |
+| **torch**                    | EasyOCR 및 딥러닝 모델 구동을 위한 핵심 프레임워크입니다.                                      | 딥러닝 엔진        |
+| **pdfplumber** / **PyMuPDF** | PDF 문서에서 텍스트 및 레이아웃, 이미지를 추출하는 데 사용됩니다.                              | 데이터 인제스트    |
+| **openpyxl** / **pandas**    | 엑셀 데이터 및 스타일, 수식을 처리하는 핵심 라이브러리입니다.                                  | 엑셀 데이터 처리   |
 
 ---
 
@@ -135,7 +125,7 @@ source venv/bin/activate  # Windows: venv\Scripts\activate
 ```
 
 > [!TIP]
-> **환경이 꼬였거나 버전을 바꾸고 싶나요? (재생성 팁)**
+> **환경이 꼬였거나 버전을 바꾸고 싶나요?(재생성 팁)**
 > 터미널 프롬프트 앞에 `(venv)`가 보인다면 아래 순서로 초기화하십시오.
 >
 > 1. `deactivate` (탈출)
@@ -163,7 +153,6 @@ pip install langchain-openai
 > - `pip install -r requirements-core.txt`: 웹 서버 및 DB 관련
 > - `pip install -r requirements-rag.txt`: AI 및 검색 엔진 관련
 > - `pip install -r requirements-doc.txt`: 문서 처리 관련
-> - `pip install -r requirements-mcp.txt`: MCP 서버 전용 (3.12 필수)
 
 ---
 
@@ -179,7 +168,7 @@ docker compose up -d
 ```
 
 > [!TIP]
-> **왜 데이터가 보관되지 않나요? (학습 모드)**
+> **왜 데이터가 보관되지 않나요?(학습 모드)**
 > 현재 실습 단계에서의 반복적인 학습(데이터 초기화 및 임베딩 재실습)을 위해 `docker-compose.yml`의 볼륨 설정을 주석 처리해 두었습니다. 데이터를 영구히 보존하고 싶다면 `docker-compose.yml` 내 가이드를 참고하여 주석을 해제하십시오.
 
 > [!IMPORTANT]
@@ -257,7 +246,7 @@ graph TD
 
 ## ⚙️ 모델 설정 및 전환
 
-기본적으로 **Ollama(로컬 모델)**를 사용하도록 설정되어 있습니다. 상세 방법은 [MODEL_CONFIG_GUIDE.md](docs/MODEL_CONFIG_GUIDE.md)를 확인하십시오.
+기본적으로 **Ollama(로컬 모델)** 를 사용하도록 설정되어 있습니다. 상세 방법은 [MODEL_CONFIG_GUIDE.md](docs/MODEL_CONFIG_GUIDE.md)를 확인하십시오.
 
 ---
 

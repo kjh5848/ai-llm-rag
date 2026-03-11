@@ -8,13 +8,13 @@ def embed_md_file(md_path, db_dir, metadata=None):
     MD 파일을 읽어 텍스트 분할 후 임베딩 및 벡터 DB 저장
     :param metadata: 파일 단위 메타데이터 (dict, optional)
     """
-    print(f"[Embed Strategy] Processing {md_path}...")
+    print(f"[임베딩 전략] {md_path} 처리 중...")
     
     with open(md_path, 'r', encoding='utf-8') as f:
         content = f.read().strip()
         
     if not content:
-        print(f"  [Warning] Skipping {md_path}: No content to embed.")
+        print(f"  [경고] {md_path} 건너뜀: 임베딩할 내용이 없습니다.")
         return
         
     # 1. 텍스트 분할 (Semantic Chunking을 위한 기본 단계)
@@ -57,7 +57,7 @@ def embed_md_file(md_path, db_dir, metadata=None):
         ids=ids
     )
     
-    print(f"  -> Embedded {len(chunks)} chunks to {db_dir} (with IDs)")
+    print(f"  -> {len(chunks)} 개의 청크를 {db_dir} 에 임베딩 완료 (ID 포함)")
 
 if __name__ == "__main__":
     # Test code
